@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>💊 Medicine Reminder</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --primary:    #1a7fbf;
+  --primary-dk: #145f94;
+  --green:      #1a9e7f;
+  --green-dk:   #127860;
+  --amber:      #e8a020;
+  --red:        #e24b4a;
+  --bg:         #eef6fb;
+  --surface:    #ffffff;
+  --surface2:   #f4faff;
+  --border:     #cce0ef;
+  --text:       #0f2d45;
+  --text2:      #4a6a82;
+  --text3:      #8aafc8;
+  --radius:     16px;
+  --radius-sm:  10px;
+  --shadow:     0 4px 24px rgba(26,127,191,0.10);
+  --shadow-md:  0 8px 32px rgba(26,127,191,0.16);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);
+  min-height:100vh;
+  padding-bottom:3rem;
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(26,127,191,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 85% 80%, rgba(26,158,127,0.07) 0%, transparent 50%);
+}
+
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(135deg,#1a7fbf 0%,#1a9e7f 100%);
+  padding:2rem 1.5rem 3rem;
+  border-radius:0 0 32px 32px;
+  text-align:center;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+.header::before{
+  content:'';
+  position:absolute;
+  width:200px;height:200px;
+  background:rgba(255,255,255,0.06);
+  border-radius:50%;
+  top:-60px;right:-50px;
+}
+.header::after{
+  content:'';
+  position:absolute;
+  width:140px;height:140px;
+  background:rgba(255,255,255,0.05);
+  border-radius:50%;
+  bottom:-40px;left:-30px;
+}
+.header-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.30);
+  padding:6px 16px;border-radius:30px;
+  font-size:12px;font-weight:700;letter-spacing:0.08em;
+  color:rgba(255,255,255,0.95);
+  margin-bottom:1rem;
+  text-transform:uppercase;
+}
+.header-icon{font-size:3rem;line-height:1;margin-bottom:0.5rem;display:block;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.15));}
+.header h1{font-size:28px;font-weight:900;letter-spacing:-0.01em;text-shadow:0 2px 8px rgba(0,0,0,0.12);}
+.header p{font-size:14px;opacity:0.88;margin-top:6px;font-weight:400;font-family:'Lato',sans-serif;}
+
+/* ── TIME DISPLAY ── */
+.live-time{
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.25);
+  border-radius:14px;
+  padding:10px 20px;
+  margin:1.2rem auto 0;
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:22px;font-weight:800;letter-spacing:0.04em;
+  color:#fff;
+}
+.live-time .dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#7fffcc;
+  animation:pulse-dot 1.2s ease-in-out infinite;
+}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.7);}}
+
+/* ── ACCESSIBILITY BAR ── */
+.a11y-bar{
+  display:flex;gap:8px;align-items:center;
+  margin:1rem 1rem 0;
+  flex-wrap:wrap;
+}
+.a11y-label{font-size:11px;color:var(--text3);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;margin-right:2px;}
+.a11y-btn{
+  padding:7px 14px;border-radius:20px;
+  border:1.5px solid var(--border);
+  background:var(--surface);color:var(--text2);
+  font-size:13px;font-weight:700;cursor:pointer;
+  transition:all 0.18s;font-family:'Nunito',sans-serif;
+}
+.a11y-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.a11y-btn:hover:not(.active){border-color:var(--primary);color:var(--primary);}
+
+/* ── CARDS ── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.5rem;
+  margin:1rem 1rem 0;
+  box-shadow:var(--shadow);
+  animation:slideUp 0.4s ease both;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.card:nth-child(2){animation-delay:0.05s;}
+.card:nth-child(3){animation-delay:0.1s;}
+
+.card-title{
+  font-size:16px;font-weight:800;
+  color:var(--text);
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:1.2rem;
+}
+.card-title .icon{font-size:20px;}
+.card-title .badge{
+  margin-left:auto;
+  background:var(--primary);color:#fff;
+  font-size:11px;font-weight:800;
+  padding:3px 10px;border-radius:20px;
+  min-width:24px;text-align:center;
+}
+.card-title .badge.green{background:var(--green);}
+
+/* ── FIELDS ── */
+.field{margin-bottom:1rem;}
+.field label{
+  display:flex;align-items:center;gap:6px;
+  font-size:13px;color:var(--text2);
+  margin-bottom:7px;font-weight:700;
+  letter-spacing:0.01em;
+}
+.field label .licon{font-size:15px;}
+.field input,.field select{
+  width:100%;
+  padding:13px 16px;
+  font-size:16px;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  background:var(--surface2);
+  color:var(--text);
+  transition:border-color 0.18s,box-shadow 0.18s,background 0.18s;
+  outline:none;
+  font-family:'Nunito',sans-serif;
+  font-weight:600;
+}
+.field input:focus,.field select:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(26,127,191,0.14);
+  background:#fff;
+}
+.field input::placeholder{color:var(--text3);font-weight:400;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* ── VOICE TOGGLE ── */
+.voice-row{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 16px;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  background:var(--surface2);
+  cursor:pointer;
+  transition:all 0.18s;
+  user-select:none;
+  margin-bottom:0.2rem;
+}
+.voice-row:hover{border-color:var(--primary);background:#f0f8ff;}
+.voice-row .vicon{font-size:22px;}
+.voice-row .vtxt{flex:1;}
+.voice-row .vtxt strong{display:block;font-size:14px;color:var(--text);font-weight:800;}
+.voice-row .vtxt small{font-size:11px;color:var(--text3);font-weight:400;}
+.switch{
+  width:48px;height:26px;background:#c5d8ea;
+  border-radius:13px;position:relative;
+  transition:background 0.22s;flex-shrink:0;
+}
+.switch.on{background:var(--green);}
+.switch::after{
+  content:'';position:absolute;
+  width:20px;height:20px;background:#fff;
+  border-radius:50%;top:3px;left:3px;
+  transition:left 0.22s;
+  box-shadow:0 1px 4px rgba(0,0,0,0.2);
+}
+.switch.on::after{left:25px;}
+
+/* ── TEST VOICE BUTTON ── */
+.btn-test{
+  width:100%;padding:11px;
+  background:transparent;
+  color:var(--green);
+  border:2px solid var(--green);
+  border-radius:50px;
+  font-size:14px;font-weight:800;
+  cursor:pointer;
+  margin-top:0.7rem;
+  transition:all 0.18s;
+  font-family:'Nunito',sans-serif;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-test:hover{background:var(--green);color:#fff;}
+.btn-test:active{transform:scale(0.98);}
+
+/* ── PRIMARY BUTTON ── */
+.btn-primary{
+  width:100%;padding:17px;
+  background:linear-gradient(135deg,var(--primary) 0%,var(--green) 100%);
+  color:#fff;
+  border:none;border-radius:50px;
+  font-size:18px;font-weight:900;
+  cursor:pointer;
+  margin-top:1rem;
+  transition:transform 0.14s,box-shadow 0.18s,filter 0.18s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  font-family:'Nunito',sans-serif;
+  letter-spacing:0.01em;
+  box-shadow:0 6px 24px rgba(26,127,191,0.32);
+  position:relative;overflow:hidden;
+}
+.btn-primary::after{
+  content:'';
+  position:absolute;inset:0;
+  background:rgba(255,255,255,0);
+  transition:background 0.18s;
+}
+.btn-primary:hover{filter:brightness(1.07);box-shadow:0 8px 32px rgba(26,127,191,0.40);transform:translateY(-1px);}
+.btn-primary:active{transform:scale(0.98) translateY(0);box-shadow:0 4px 16px rgba(26,127,191,0.28);}
+
+/* ── REMINDER ITEMS ── */
+.reminder-item{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;
+  border-radius:var(--radius-sm);
+  background:var(--surface2);
+  margin-bottom:10px;
+  border:1px solid var(--border);
+  transition:border-color 0.18s,box-shadow 0.15s,transform 0.15s;
+  animation:fadeIn 0.35s ease both;
+  position:relative;overflow:hidden;
+}
+.reminder-item::before{
+  content:'';
+  position:absolute;left:0;top:0;bottom:0;
+  width:4px;border-radius:4px 0 0 4px;
+}
+.reminder-item.blue::before{background:var(--primary);}
+.reminder-item.green::before{background:var(--green);}
+.reminder-item.amber::before{background:var(--amber);}
+
+@keyframes fadeIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
+.reminder-item:hover{border-color:var(--primary);box-shadow:var(--shadow);transform:translateX(2px);}
+
+.pill-box{
+  width:46px;height:46px;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.pill-box.blue{background:#ddeeff;}
+.pill-box.green{background:#d4f5ea;}
+.pill-box.amber{background:#fff0d4;}
+
+.rinfo{flex:1;min-width:0;}
+.rname{font-size:15px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rmeta{font-size:12px;color:var(--text2);margin-top:3px;font-weight:400;}
+.rnote{font-size:11px;color:var(--text3);margin-top:1px;font-style:italic;}
+
+.rtime{
+  font-size:13px;font-weight:800;
+  padding:6px 12px;border-radius:20px;
+  white-space:nowrap;flex-shrink:0;
+}
+.rtime.blue{color:#1260a0;background:#ddeeff;}
+.rtime.green{color:#0d6b50;background:#d4f5ea;}
+.rtime.amber{color:#9a6010;background:#fff0d4;}
+
+.del-btn{
+  background:none;border:none;cursor:pointer;
+  color:var(--text3);font-size:16px;padding:6px;
+  border-radius:8px;transition:color 0.15s,background 0.15s;
+  flex-shrink:0;font-family:'Nunito',sans-serif;
+}
+.del-btn:hover{color:var(--red);background:#fdecea;}
+
+/* ── STATUS CHIP ── */
+.status-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:800;
+  padding:3px 9px;border-radius:12px;
+  margin-left:6px;
+}
+.status-chip.next{background:#fff3cd;color:#8a5c00;}
+.status-chip.overdue{background:#fdecea;color:#a0302f;}
+
+/* ── EMPTY STATE ── */
+.empty{
+  text-align:center;padding:2.5rem 1rem;
+  color:var(--text3);
+}
+.empty .eicon{font-size:3.5rem;margin-bottom:0.8rem;display:block;opacity:0.6;}
+.empty p{font-size:14px;line-height:1.6;}
+
+/* ── ALARM OVERLAY ── */
+.alarm-overlay{
+  position:fixed;inset:0;
+  background:rgba(10,40,70,0.7);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;
+  animation:overlayIn 0.3s ease;
+}
+@keyframes overlayIn{from{opacity:0;}to{opacity:1;}}
+.alarm-card{
+  background:#fff;
+  border-radius:24px;
+  padding:2.5rem 2rem;
+  text-align:center;
+  max-width:340px;width:90%;
+  box-shadow:0 20px 60px rgba(0,0,0,0.30);
+  animation:alarmIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes alarmIn{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
+.alarm-ring{
+  font-size:4.5rem;
+  animation:ring 0.5s ease-in-out infinite alternate;
+  display:block;margin-bottom:0.8rem;
+  filter:drop-shadow(0 4px 12px rgba(26,127,191,0.3));
+}
+@keyframes ring{from{transform:rotate(-15deg);}to{transform:rotate(15deg);}}
+.alarm-title{font-size:14px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;}
+.alarm-name{font-size:26px;font-weight:900;color:var(--text);margin-bottom:0.3rem;line-height:1.2;}
+.alarm-time{font-size:18px;color:var(--primary);font-weight:800;margin-bottom:0.6rem;}
+.alarm-note{font-size:14px;color:var(--text2);margin-bottom:1.5rem;font-style:italic;}
+.alarm-pulse{
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(26,127,191,0.12);
+  margin:0 auto 1.5rem;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.alarm-pulse::before,.alarm-pulse::after{
+  content:'';position:absolute;border-radius:50%;
+  border:2px solid rgba(26,127,191,0.3);
+  animation:ripple 1.5s linear infinite;
+}
+.alarm-pulse::after{animation-delay:0.75s;}
+@keyframes ripple{
+  0%{width:80px;height:80px;opacity:1;}
+  100%{width:140px;height:140px;opacity:0;}
+}
+.alarm-icon-inner{font-size:2rem;}
+.btn-dismiss{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--primary),var(--green));
+  color:#fff;border:none;border-radius:50px;
+  font-size:17px;font-weight:900;cursor:pointer;
+  font-family:'Nunito',sans-serif;
+  box-shadow:0 4px 20px rgba(26,127,191,0.35);
+  transition:filter 0.18s,transform 0.1s;
+}
+.btn-dismiss:hover{filter:brightness(1.08);}
+.btn-dismiss:active{transform:scale(0.98);}
+.btn-snooze{
+  width:100%;padding:11px;
+  background:transparent;color:var(--text2);
+  border:1.5px solid var(--border);
+  border-radius:50px;font-size:14px;font-weight:700;
+  cursor:pointer;margin-top:0.6rem;
+  font-family:'Nunito',sans-serif;
+  transition:all 0.18s;
+}
+.btn-snooze:hover{border-color:var(--amber);color:var(--amber);}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:1.8rem;left:50%;
+  transform:translateX(-50%) translateY(70px);
+  background:var(--text);color:#fff;
+  padding:14px 24px;border-radius:40px;
+  font-size:14px;font-weight:700;
+  opacity:0;transition:all 0.32s cubic-bezier(0.34,1.56,0.64,1);
+  white-space:nowrap;z-index:100;
+  pointer-events:none;
+  box-shadow:0 8px 28px rgba(0,0,0,0.22);
+  font-family:'Nunito',sans-serif;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.green-t{background:var(--green);}
+.toast.red-t{background:var(--red);}
+
+/* ── VOLUME SLIDER ── */
+.vol-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 16px 0;
+}
+.vol-row label{font-size:12px;color:var(--text2);font-weight:700;white-space:nowrap;}
+.vol-row input[type=range]{
+  flex:1;accent-color:var(--primary);cursor:pointer;
+}
+.vol-row .vol-val{font-size:12px;font-weight:800;color:var(--primary);min-width:34px;text-align:right;}
+
+/* ── ACCESSIBILITY MODES ── */
+.hc .card,.hc .voice-row,.hc .field input,.hc .field select{border-color:#5a90b8;border-width:2px;}
+.hc .rname{font-size:17px;}
+.hc .btn-primary{font-size:20px;padding:19px;}
+.hc .reminder-item{border-color:#5a90b8;border-width:2px;}
+.hc .card-title{font-size:18px;}
+.hc .field label{font-size:15px;}
+.hc body,.hc{background:#e8f4fb;}
+
+.lg .field input,.lg .field select{font-size:20px;padding:15px 18px;}
+.lg .rname{font-size:18px;}
+.lg .rmeta{font-size:14px;}
+.lg .btn-primary{font-size:21px;padding:20px;}
+.lg .card-title{font-size:18px;}
+.lg .field label{font-size:16px;}
+.lg .rtime{font-size:15px;padding:8px 14px;}
+.lg .voice-row .vtxt strong{font-size:16px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:480px){
+  .app{max-width:100%;}
+  .card{margin:0.8rem 0.75rem 0;padding:1.25rem;}
+  .a11y-bar{margin:0.8rem 0.75rem 0;}
+  .header h1{font-size:24px;}
+  .live-time{font-size:18px;}
+  .row{grid-template-columns:1fr;}
+}
+@media(max-width:360px){
+  .a11y-bar{gap:5px;}
+  .a11y-btn{padding:6px 10px;font-size:12px;}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-pill">🏥 Healthcare &nbsp;•&nbsp; Accessibility First</div>
+    <span class="header-icon">💊</span>
+    <h1>Medicine Reminder</h1>
+    <p>Designed for elderly &amp; disabled users — simple, clear, caring</p>
+    <div class="live-time">
+      <span class="dot"></span>
+      <span id="clockDisplay">--:-- --</span>
+    </div>
+  </div>
+
+  <!-- ACCESSIBILITY BAR -->
+  <div class="a11y-bar">
+    <span class="a11y-label">View:</span>
+    <button class="a11y-btn active" onclick="setMode('normal',this)">Standard</button>
+    <button class="a11y-btn" onclick="setMode('hc',this)">High Contrast</button>
+    <button class="a11y-btn" onclick="setMode('lg',this)">Large Text</button>
+  </div>
+
+  <!-- ADD REMINDER CARD -->
+  <div class="card" style="animation-delay:0.05s">
+    <div class="card-title">
+      <span class="icon">🕐</span> Set a New Reminder
+    </div>
+
+    <div class="field">
+      <label><span class="licon">💊</span> Medicine Name</label>
+      <input id="medName" type="text" placeholder="e.g. Metformin 500mg" autocomplete="off"/>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label><span class="licon">🕐</span> Time</label>
+        <input id="medTime" type="time"/>
+      </div>
+      <div class="field">
+        <label><span class="licon">🔁</span> Frequency</label>
+        <select id="medFreq">
+          <option value="Daily">Daily</option>
+          <option value="Twice daily">Twice daily</option>
+          <option value="Three times daily">Three times daily</option>
+          <option value="Weekly">Weekly</option>
+          <option value="As needed">As needed</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label><span class="licon">📝</span> Notes (optional)</label>
+      <input id="medNote" type="text" placeholder="e.g. Take after meals with water"/>
+    </div>
+
+    <!-- VOICE SECTION -->
+    <div class="voice-row" onclick="toggleVoice()" role="button"
+         tabindex="0" aria-label="Toggle voice reminder"
+         onkeydown="if(event.key==='Enter'||event.key===' ')toggleVoice()">
+      <span class="vicon">🔊</span>
+      <div class="vtxt">
+        <strong>Voice Alarm &amp; Reminder</strong>
+        <small>Speaks medicine name &amp; time loudly at the set hour</small>
+      </div>
+      <div class="switch" id="voiceSwitch"></div>
+    </div>
+
+    <div class="vol-row" id="volRow" style="display:none">
+      <label>🔈 Volume:</label>
+      <input type="range" id="volSlider" min="0" max="1" step="0.05" value="1"
+             oninput="updateVol(this.value)" aria-label="Voice volume"/>
+      <span class="vol-val" id="volVal">100%</span>
+    </div>
+
+    <button class="btn-test" id="testBtn" onclick="testVoice()" style="display:none">
+      <span>▶</span> Test Voice Now
+    </button>
+
+    <button class="btn-primary" onclick="addReminder()">
+      <span style="font-size:22px;line-height:1">＋</span> Set Reminder
+    </button>
+  </div>
+
+  <!-- UPCOMING REMINDERS CARD -->
+  <div class="card" style="animation-delay:0.1s">
+    <div class="card-title">
+      <span class="icon">📋</span>
+      Upcoming Reminders
+      <span class="badge green" id="countBadge">0</span>
+    </div>
+    <div id="reminderList"></div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ALARM OVERLAY -->
+<div class="alarm-overlay" id="alarmOverlay" style="display:none">
+  <div class="alarm-card">
+    <span class="alarm-ring">⏰</span>
+    <div class="alarm-title">Time to take your medicine</div>
+    <div class="alarm-pulse"><span class="alarm-icon-inner">💊</span></div>
+    <div class="alarm-name" id="alarmName">—</div>
+    <div class="alarm-time" id="alarmTime">—</div>
+    <div class="alarm-note" id="alarmNote"></div>
+    <button class="btn-dismiss" onclick="dismissAlarm()">✔ Got it! Taken</button>
+    <button class="btn-snooze" onclick="snoozeAlarm()">⏱ Snooze 5 minutes</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────
+const COLORS = ['blue','green','amber'];
+const EMOJIS = ['💊','🩺','🧴','🩹','💉','🌿'];
+
+let voiceOn   = false;
+let volume    = 1.0;
+let toastTmr;
+let alarmTmr;
+let snoozeActive = false;
+let currentAlarm = null;
+let checkInterval;
+
+let reminders = [
+  {id:1, name:'Metformin 500mg',  time:'08:00', freq:'Daily',  note:'Take after breakfast',  color:'blue',  emoji:'💊'},
+  {id:2, name:'Atorvastatin 20mg',time:'21:00', freq:'Daily',  note:'Take at bedtime',       color:'green', emoji:'🩺'},
+  {id:3, name:'Vitamin D3 1000IU',time:'13:00', freq:'Daily',  note:'Take with lunch',       color:'amber', emoji:'🧴'}
+];
+
+// ── CLOCK ─────────────────────────────────────────────
+function updateClock(){
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('clockDisplay').textContent =
+    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ampm}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ── FORMAT TIME ───────────────────────────────────────
+function fmt(t){
+  if(!t) return '';
+  const [h,m] = t.split(':');
+  const hr = parseInt(h,10);
+  return `${hr>12?hr-12:hr||12}:${m} ${hr>=12?'PM':'AM'}`;
+}
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── RENDER ────────────────────────────────────────────
+function render(){
+  const list = document.getElementById('reminderList');
+  document.getElementById('countBadge').textContent = reminders.length;
+  if(!reminders.length){
+    list.innerHTML=`<div class="empty">
+      <span class="eicon">🔔</span>
+      <p>No reminders yet.<br>Add your first medicine above<br>to get started.</p>
+    </div>`;
+    return;
+  }
+  const sorted = [...reminders].sort((a,b)=>a.time.localeCompare(b.time));
+  const nowMins = getNowMins();
+
+  list.innerHTML = sorted.map(r=>{
+    const rMins = timeMins(r.time);
+    const diff  = rMins - nowMins;
+    let chip='';
+    if(diff>0 && diff<=60) chip=`<span class="status-chip next">⏳ in ${diff}min</span>`;
+    else if(diff<0 && diff>=-5) chip=`<span class="status-chip overdue">⚠ Now!</span>`;
+    return `
+    <div class="reminder-item ${r.color}" id="item-${r.id}">
+      <div class="pill-box ${r.color}">${r.emoji}</div>
+      <div class="rinfo">
+        <div class="rname">${esc(r.name)}${chip}</div>
+        <div class="rmeta">${esc(r.freq)}</div>
+        ${r.note?`<div class="rnote">${esc(r.note)}</div>`:''}
+      </div>
+      <div class="rtime ${r.color}">${fmt(r.time)}</div>
+      <button class="del-btn" onclick="delReminder(${r.id})" aria-label="Remove ${esc(r.name)}">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ── ADD REMINDER ──────────────────────────────────────
+function addReminder(){
+  const name = document.getElementById('medName').value.trim();
+  const time = document.getElementById('medTime').value;
+  const freq = document.getElementById('medFreq').value;
+  const note = document.getElementById('medNote').value.trim();
+  if(!name){showToast('⚠️ Please enter a medicine name','');return;}
+  if(!time){showToast('⚠️ Please select a time','');return;}
+  const r={
+    id:Date.now(), name, time, freq, note,
+    color: COLORS[reminders.length % COLORS.length],
+    emoji: EMOJIS[Math.floor(Math.random()*EMOJIS.length)]
+  };
+  reminders.push(r);
+  render();
+  document.getElementById('medName').value='';
+  document.getElementById('medTime').value='';
+  document.getElementById('medNote').value='';
+  showToast(`✅ Reminder set for ${fmt(time)}`,'green-t');
+  if(voiceOn) speak(`Reminder added. ${name} at ${fmt(time)}. ${note?'Note: '+note:''}`, true);
+}
+
+// ── DELETE ────────────────────────────────────────────
+function delReminder(id){
+  reminders = reminders.filter(r=>r.id!==id);
+  render();
+  showToast('🗑️ Reminder removed','');
+}
+
+// ── VOICE TOGGLE ─────────────────────────────────────
+function toggleVoice(){
+  voiceOn=!voiceOn;
+  document.getElementById('voiceSwitch').className='switch'+(voiceOn?' on':'');
+  document.getElementById('volRow').style.display = voiceOn?'flex':'none';
+  document.getElementById('testBtn').style.display = voiceOn?'flex':'none';
+  showToast(voiceOn?'🔊 Voice reminders enabled':'🔇 Voice reminders off','');
+  if(voiceOn){
+    speak('Voice reminders are now enabled. I will announce your medicines loudly at the scheduled time.',true);
+    startAlarmChecker();
+  } else {
+    stopAlarmChecker();
+  }
+}
+
+// ── VOLUME ────────────────────────────────────────────
+function updateVol(v){
+  volume = parseFloat(v);
+  document.getElementById('volVal').textContent = Math.round(volume*100)+'%';
+}
+
+// ── TEST VOICE ────────────────────────────────────────
+function testVoice(){
+  const name = document.getElementById('medName').value.trim() || 'Metformin 500mg';
+  const time = document.getElementById('medTime').value || '08:00';
+  speak(`Medicine reminder test. It is time to take your ${name}. Please take your medicine now. ${document.getElementById('medNote').value.trim()||''}`, true);
+  showToast('🔊 Testing voice…','green-t');
+}
+
+// ── SPEAK (robust, loud, repeated) ────────────────────
+let speechQueue = [];
+let isSpeaking  = false;
+
+function speak(text, loud=false){
+  if(!('speechSynthesis' in window)){
+    showToast('⚠️ Browser does not support voice','');
+    return;
+  }
+  // Cancel any ongoing speech first
+  window.speechSynthesis.cancel();
+  isSpeaking = false;
+
+  // Pick best voice
+  const voices = window.speechSynthesis.getVoices();
+  let voice = voices.find(v=>v.lang.startsWith('en') && v.localService) ||
+              voices.find(v=>v.lang.startsWith('en')) ||
+              voices[0] || null;
+
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang   = 'en-US';
+  u.rate   = loud ? 0.82 : 0.88;
+  u.pitch  = loud ? 1.05 : 1.0;
+  u.volume = loud ? Math.max(volume, 0.85) : volume; // always ≥85% for alarms
+  if(voice) u.voice = voice;
+
+  u.onstart = ()=>{ isSpeaking=true; };
+  u.onend   = ()=>{ isSpeaking=false; };
+  u.onerror = (e)=>{ isSpeaking=false; console.warn('TTS error',e); };
+
+  window.speechSynthesis.speak(u);
+
+  // Chrome bug fix: resume if paused after 15s
+  const keepAlive = setInterval(()=>{
+    if(window.speechSynthesis.speaking) window.speechSynthesis.resume();
+    else clearInterval(keepAlive);
+  },10000);
+}
+
+// Ensure voices are loaded (async on some browsers)
+window.speechSynthesis.onvoiceschanged = ()=>{ window.speechSynthesis.getVoices(); };
+
+// ── ALARM CHECKER ─────────────────────────────────────
+function getNowMins(){
+  const n=new Date();
+  return n.getHours()*60+n.getMinutes();
+}
+function timeMins(t){
+  const [h,m]=t.split(':');
+  return parseInt(h,10)*60+parseInt(m,10);
+}
+function getNowHHMM(){
+  const n=new Date();
+  return `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+}
+
+const firedToday = new Set(); // track fired alarms
+
+function checkAlarms(){
+  if(!voiceOn) return;
+  const nowHHMM = getNowHHMM();
+  const key = nowHHMM;
+  reminders.forEach(r=>{
+    const rKey = r.id+'-'+r.time;
+    if(r.time === nowHHMM && !firedToday.has(rKey)){
+      firedToday.add(rKey);
+      // Remove stale keys (yesterday's)
+      setTimeout(()=>firedToday.delete(rKey), 61000);
+      triggerAlarm(r);
+    }
+  });
+}
+
+function startAlarmChecker(){
+  stopAlarmChecker();
+  checkAlarms();
+  checkInterval = setInterval(checkAlarms, 10000); // check every 10s
+}
+function stopAlarmChecker(){
+  if(checkInterval) clearInterval(checkInterval);
+}
+
+function triggerAlarm(r){
+  currentAlarm = r;
+
+  // Show overlay
+  document.getElementById('alarmName').textContent = r.name;
+  document.getElementById('alarmTime').textContent  = 'Time: '+fmt(r.time);
+  document.getElementById('alarmNote').textContent  = r.note || '';
+  document.getElementById('alarmOverlay').style.display='flex';
+
+  // LOUD voice — repeat 3 times with delay
+  const msg = `Medicine reminder! Medicine reminder! It is time to take your ${r.name}. ${r.note?'Remember: '+r.note+'.':''} Please take your medicine now.`;
+  speakAlarm(msg);
+}
+
+function speakAlarm(msg, repeat=3){
+  window.speechSynthesis.cancel();
+  const voices = window.speechSynthesis.getVoices();
+  let voice = voices.find(v=>v.lang.startsWith('en') && v.localService) ||
+              voices.find(v=>v.lang.startsWith('en')) || voices[0] || null;
+
+  function sayOnce(cb){
+    const u = new SpeechSynthesisUtterance(msg);
+    u.lang   = 'en-US';
+    u.rate   = 0.80;
+    u.pitch  = 1.1;
+    u.volume = 1.0; // MAX volume for alarm
+    if(voice) u.voice = voice;
+    u.onend = cb;
+    u.onerror = cb;
+    window.speechSynthesis.speak(u);
+    // Chrome keepAlive
+    const ka = setInterval(()=>{
+      if(window.speechSynthesis.speaking) window.speechSynthesis.resume();
+      else clearInterval(ka);
+    },8000);
+  }
+
+  let count = 0;
+  function next(){
+    if(count < repeat && document.getElementById('alarmOverlay').style.display!=='none'){
+      count++;
+      setTimeout(()=>sayOnce(next), 800);
+    }
+  }
+  next();
+}
+
+function dismissAlarm(){
+  window.speechSynthesis.cancel();
+  document.getElementById('alarmOverlay').style.display='none';
+  showToast('✅ Medicine taken — well done!','green-t');
+  currentAlarm = null;
+}
+
+function snoozeAlarm(){
+  window.speechSynthesis.cancel();
+  document.getElementById('alarmOverlay').style.display='none';
+  showToast('⏱ Snoozed for 5 minutes','');
+  if(currentAlarm){
+    const r = currentAlarm;
+    // Re-trigger in 5 minutes (300000ms)
+    setTimeout(()=>{
+      if(voiceOn) triggerAlarm(r);
+    }, 300000);
+    // Remove from firedToday so it can fire again after snooze
+    const rKey = r.id+'-'+r.time;
+    firedToday.delete(rKey);
+  }
+  currentAlarm = null;
+}
+
+// ── ACCESSIBILITY MODE ────────────────────────────────
+function setMode(m, btn){
+  const app = document.getElementById('app');
+  app.classList.remove('hc','lg');
+  document.body.classList.remove('hc','lg');
+  if(m==='hc'){app.classList.add('hc');document.body.classList.add('hc');}
+  if(m==='lg'){app.classList.add('lg');document.body.classList.add('lg');}
+  document.querySelectorAll('.a11y-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── TOAST ─────────────────────────────────────────────
+function showToast(msg,cls=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast show '+(cls||'');
+  clearTimeout(toastTmr);
+  toastTmr=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── REFRESH REMINDER LIST every minute ────────────────
+render();
+setInterval(render, 30000);
+</script>
+</body>
+</html>
